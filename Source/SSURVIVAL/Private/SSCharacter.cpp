@@ -1,0 +1,54 @@
+// 2026 sabaka-chabaka
+
+#include "SSURVIVAL/Public/SSCharacter.h"
+
+#include "Camera/CameraComponent.h"
+
+ASSCharacter::ASSCharacter()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComponent->SetupAttachment(RootComponent);
+	CameraComponent->bUsePawnControlRotation = true;
+}
+
+void ASSCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ASSCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
+void ASSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	
+	PlayerInputComponent->BindAxis("MoveForward", this, &ASSCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ASSCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("LookUp", this, &ASSCharacter::LookUp);
+	PlayerInputComponent->BindAxis("TurnAtRate", this, &ASSCharacter::TurnCamera);
+}
+
+void ASSCharacter::MoveForward(float Value)
+{
+	AddMovementInput(GetActorForwardVector(), Value);
+}
+
+void ASSCharacter::MoveRight(float Value)
+{
+	AddMovementInput(GetActorRightVector(), Value);
+}
+
+void ASSCharacter::LookUp(float Value)
+{
+	AddControllerYawInput(Value);
+}
+
+void ASSCharacter::TurnCamera(float Value)
+{
+	AddControllerPitchInput(Value);
+}
