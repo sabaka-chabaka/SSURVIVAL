@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Weapon.h"
 #include "GameFramework/Character.h"
 #include "SSCharacter.generated.h"
 
@@ -30,4 +31,11 @@ protected:
 	void MoveRight(float Value);
 	void LookUp(float Value);
 	void TurnCamera(float Value);
+	void Fire();
+	
+	UPROPERTY(EditAnywhere)
+	AWeapon* CurrentWeapon;
+	
+public:
+	void PickupWeapon(AWeapon* Weapon);
 };
