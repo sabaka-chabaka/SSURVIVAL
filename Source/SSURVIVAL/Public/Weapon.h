@@ -27,9 +27,13 @@ public:
 	void Reload();
 	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* Mesh;
 
 protected:
 	virtual void BeginPlay() override;
+	void DrawTracer(const FVector& End) const;
 
 public:
 	UPROPERTY(EditAnywhere)

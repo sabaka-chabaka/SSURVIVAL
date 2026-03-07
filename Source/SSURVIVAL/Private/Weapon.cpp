@@ -8,11 +8,20 @@
 AWeapon::AWeapon()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->SetupAttachment(RootComponent);
 }
 
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AWeapon::DrawTracer(const FVector& End) const
+{
+	FVector Start = Mesh->GetSocketLocation("MuzzleFlashSocket");
+	
+	DrawDebugLine(GetWorld(), Start, End, FColor::Yellow, false, 0.1f, 0, 0.5);
 }
 
 void AWeapon::Fire(const FVector& Start, const FVector& Direction)
@@ -24,6 +33,7 @@ void AWeapon::Fire(const FVector& Start, const FVector& Direction)
 	FHitResult Hit;
 	
 	GetWorld()->LineTraceSingleByChannel(Hit, Start, Start + Direction * Range, ECC_Visibility);
+	DrawTracer(Hit.ImpactPoint);
 	
 	if (Hit.GetActor())
 	{
