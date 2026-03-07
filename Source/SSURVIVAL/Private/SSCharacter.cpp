@@ -27,6 +27,7 @@ void ASSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASSCharacter::Fire);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &ASSCharacter::Reload);
 	
 	PlayerInputComponent->BindAxis("MoveForward", this, &ASSCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ASSCharacter::MoveRight);
@@ -59,6 +60,13 @@ void ASSCharacter::Fire()
 	if (!CurrentWeapon) return;	
 	
 	CurrentWeapon->Fire(CameraComponent->GetComponentLocation(), CameraComponent->GetForwardVector());
+}
+
+void ASSCharacter::Reload()
+{
+	if (!CurrentWeapon) return;	
+	
+	CurrentWeapon->Reload();
 }
 
 void ASSCharacter::PickupWeapon(AWeapon* Weapon)

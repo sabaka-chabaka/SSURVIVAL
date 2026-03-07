@@ -32,6 +32,7 @@ protected:
 	void LookUp(float Value);
 	void TurnCamera(float Value);
 	void Fire();
+	void Reload();
 	
 	UPROPERTY(EditAnywhere)
 	AWeapon* CurrentWeapon;

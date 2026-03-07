@@ -24,6 +24,7 @@ public:
 	AWeapon();
 	
 	void Fire(const FVector& Start, const FVector& Direction);
+	void Reload();
 	
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
@@ -39,6 +40,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	int Ammo;
+	
+	UPROPERTY(EditAnywhere)
+	int ReserveAmmo;
 	
 	UPROPERTY(EditAnywhere)
 	int MaxAmmo;

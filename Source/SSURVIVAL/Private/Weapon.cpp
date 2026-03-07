@@ -31,6 +31,20 @@ void AWeapon::Fire(const FVector& Start, const FVector& Direction)
 	}
 }
 
+void AWeapon::Reload()
+{
+	if (Ammo == MaxAmmo) return;
+	
+	if (ReserveAmmo <= 0) return;
+	
+	int NewAmmo = FMath::Min(ReserveAmmo, MaxAmmo - Ammo);
+	
+	ReserveAmmo -= NewAmmo;
+	Ammo += NewAmmo;
+	
+	UE_LOG(LogTemp, Warning, TEXT("Reloaded: %d. Ammo: %d, Reserve: %d"), NewAmmo, Ammo, ReserveAmmo)
+}
+
 void AWeapon::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
