@@ -12,7 +12,8 @@ enum EWeaponType : uint8
 	Rifle,
 	Pistol,
 	Bow,
-	Shotgun
+	Shotgun,
+	Unknown
 };
 
 UCLASS()
@@ -50,6 +51,9 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	int MaxAmmo;
+	
+	UPROPERTY(EditAnywhere)
+	TEnumAsByte<EWeaponType> WeaponType;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UDamageType> DamageType;

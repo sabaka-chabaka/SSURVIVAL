@@ -10,6 +10,7 @@ AWeapon::AWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(RootComponent);
+	WeaponType = Unknown;
 }
 
 void AWeapon::BeginPlay()
