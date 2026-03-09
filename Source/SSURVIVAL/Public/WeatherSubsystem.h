@@ -75,6 +75,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Weather")
 	class UDirectionalLightComponent* SunLight;
 	
-	void UpdateSunRotation();
+	void UpdateSunRotation() const;
 	void UpdateMonth();
 };

@@ -3,6 +3,8 @@
 #include "WeatherSubsystem.h"
 
 #include "Components/DirectionalLightComponent.h"
+#include "Components/ExponentialHeightFogComponent.h"
+#include "Components/VolumetricCloudComponent.h"
 
 void UWeatherSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -44,6 +46,37 @@ void UWeatherSubsystem::Tick(float DeltaTime)
 
 		UpdateMonth();
 	}
+	
+	if (!CloudyComponent || !FogComponent)
+	{
+		return;
+	}
+
+	switch (CurrentWeatherTable.Weather)
+	{
+	case Clear:
+		CloudyComponent->SetVisibility(false);
+		FogComponent->SetVisibility(true);
+		FogComponent->SetFogDensity(0.05f);
+		break;
+	case Cloudy:
+		CloudyComponent->SetVisibility(true);
+		FogComponent->SetVisibility(true);
+		FogComponent->SetFogDensity(0.05f);
+		break;
+	case Rain:
+		CloudyComponent->SetVisibility(true);
+		FogComponent->SetVisibility(true);
+		FogComponent->SetFogDensity(1.0f);
+		break;
+	case Fog:
+		CloudyComponent->SetVisibility(false);
+		FogComponent->SetVisibility(true);
+		FogComponent->SetFogDensity(1.0f);
+		break;
+	default:
+		break;
+	}
 }
 
 TStatId UWeatherSubsystem::GetStatId() const
@@ -51,7 +84,7 @@ TStatId UWeatherSubsystem::GetStatId() const
 	RETURN_QUICK_DECLARE_CYCLE_STAT(UWeatherSubsystem, STATGROUP_Tickables);
 }
 
-void UWeatherSubsystem::UpdateSunRotation()
+void UWeatherSubsystem::UpdateSunRotation() const
 {
 	if (!SunLight)
 	{
