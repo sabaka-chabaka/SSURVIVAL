@@ -90,8 +90,7 @@ void ASSCharacter::TryPickupItem()
 	if (!GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, Params))
 		return;
 
-	AWorldItem* WorldItem = Cast<AWorldItem>(HitResult.GetActor());
-	if (WorldItem)
+	if (AWorldItem* WorldItem = Cast<AWorldItem>(HitResult.GetActor()))
 		WorldItem->TryPickup(this);
 }
 
@@ -160,7 +159,7 @@ void ASSCharacter::ToggleInventory()
 	}
 	else
 	{
-		InventoryWidget->RemoveFromViewport();
+		InventoryWidget->RemoveFromParent();
 		PC->SetInputMode(FInputModeGameOnly());
 		PC->bShowMouseCursor = false;
 	}
