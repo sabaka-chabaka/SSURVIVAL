@@ -22,11 +22,18 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	
+	UPROPERTY(EditAnywhere)
+	int MaxSlots;
+	
+	bool AddItem(const FItemInstance& Item);
+	bool GetItem(FName Id, FItemInstance& OutItem);
+	bool RemoveItem(FName Id, int32 Amount);
+	int32 GetItemAmount(FName Id);
+	
+protected:
 	UPROPERTY()
 	TArray<FInventorySlot> Slots;
 	
 	UPROPERTY(EditAnywhere)
-	int MaxSlots;
-	
-	bool AddItem(FItemInstance Item);
+	TMap<FName, FItemData> ItemDatabase;
 };
