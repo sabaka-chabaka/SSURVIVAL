@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WorldItem.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
@@ -17,7 +18,7 @@ enum EWeaponType : uint8
 };
 
 UCLASS()
-class SSURVIVAL_API AWeapon : public AActor
+class SSURVIVAL_API AWeapon : public AWorldItem
 {
 	GENERATED_BODY()
 
