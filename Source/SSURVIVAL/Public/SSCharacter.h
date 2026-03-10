@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Weapon.h"
 #include "GameFramework/Character.h"
 #include "SSCharacter.generated.h"
 
@@ -20,12 +19,32 @@ protected:
 
 public:
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	UPROPERTY(EditAnywhere, Category="Camera")
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Camera")
 	class UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
+	class UInventoryComponent* InventoryComponent;
 	
+	UPROPERTY(EditAnywhere, Category="Interaction")
+	float InteractionDistance = 250.f;
+
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void EquipWeapon(FName ItemId);
+
+	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void UnequipWeapon();
+
+	UFUNCTION(BlueprintPure, Category="Weapon")
+	class AWeapon* GetCurrentWeapon() const { return CurrentWeapon; }
+
+	UFUNCTION(BlueprintCallable, Category="UI")
+	void ToggleInventory();
+
+	UPROPERTY(EditAnywhere, Category="UI")
+	TSubclassOf<class UInventoryWidget> InventoryWidgetClass;
+
 protected:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -33,10 +52,13 @@ protected:
 	void TurnCamera(float Value);
 	void Fire();
 	void Reload();
-	
-	UPROPERTY(EditAnywhere)
-	AWeapon* CurrentWeapon;
-	
-public:
-	void PickupWeapon(AWeapon* Weapon);
+	void TryPickupItem();
+
+	UPROPERTY()
+	class AWeapon* CurrentWeapon = nullptr;
+
+	UPROPERTY()
+	class UInventoryWidget* InventoryWidget = nullptr;
+
+	bool bInventoryOpen = false;
 };

@@ -7,6 +7,8 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryChanged);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SSURVIVAL_API UInventoryComponent : public UActorComponent
 {
@@ -19,21 +21,26 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-	
-	UPROPERTY(EditAnywhere)
-	int MaxSlots;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Inventory")
+	int MaxSlots = 20;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Inventory")
+	TMap<FName, FItemData> ItemDatabase;
+
+	UPROPERTY(BlueprintAssignable, Category="Inventory")
+	FOnInventoryChanged OnInventoryChanged;
+
 	bool AddItem(const FItemInstance& Item);
-	bool GetItem(FName Id, FItemInstance& OutItem);
 	bool RemoveItem(FName Id, int32 Amount);
-	int32 GetItemAmount(FName Id);
-	
+	bool GetItem(FName Id, FItemInstance& OutItem) const;
+	int32 GetItemAmount(FName Id) const;
+
+	UFUNCTION(BlueprintCallable, Category="Inventory")
+	TArray<FInventorySlot> GetOccupiedSlots() const;
+
+	const FItemData* GetItemData(FName Id) const;
+
 protected:
 	UPROPERTY()
 	TArray<FInventorySlot> Slots;
-	
-	UPROPERTY(EditAnywhere)
-	TMap<FName, FItemData> ItemDatabase;
 };
