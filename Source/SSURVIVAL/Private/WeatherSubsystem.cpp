@@ -10,8 +10,8 @@ void UWeatherSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 	CurrentWeatherTable.Weather = EWeatherType::Clear;
-	CurrentWeatherTable.DayOfWeek = EDayOfWeek::Monday;
-	CurrentWeatherTable.Month = EMonthOfYear::July;
+	CurrentWeatherTable.DayOfWeek = 0; // Monday
+	CurrentWeatherTable.Month = 6;     // July
 	CurrentWeatherTable.Day = 1;
 	CurrentWeatherTable.Hours = 12;
 	CurrentWeatherTable.Minutes = 0;
@@ -39,10 +39,7 @@ void UWeatherSubsystem::Tick(float DeltaTime)
 		CurrentWeatherTable.Hours = 0;
 		CurrentWeatherTable.Day++;
 
-		CurrentWeatherTable.DayOfWeek =
-			static_cast<EDayOfWeek>(
-				(static_cast<uint8>(CurrentWeatherTable.DayOfWeek.GetValue()) + 1) % 7
-			);
+		CurrentWeatherTable.DayOfWeek = (CurrentWeatherTable.DayOfWeek + 1) % 7;
 
 		UpdateMonth();
 	}
@@ -54,22 +51,22 @@ void UWeatherSubsystem::Tick(float DeltaTime)
 
 	switch (CurrentWeatherTable.Weather)
 	{
-	case Clear:
+	case EWeatherType::Clear:
 		CloudyComponent->SetVisibility(false);
 		FogComponent->SetVisibility(true);
 		FogComponent->SetFogDensity(0.05f);
 		break;
-	case Cloudy:
+	case EWeatherType::Cloudy:
 		CloudyComponent->SetVisibility(true);
 		FogComponent->SetVisibility(true);
 		FogComponent->SetFogDensity(0.05f);
 		break;
-	case Rain:
+	case EWeatherType::Rain:
 		CloudyComponent->SetVisibility(true);
 		FogComponent->SetVisibility(true);
 		FogComponent->SetFogDensity(1.0f);
 		break;
-	case Fog:
+	case EWeatherType::Fog:
 		CloudyComponent->SetVisibility(false);
 		FogComponent->SetVisibility(true);
 		FogComponent->SetFogDensity(1.0f);
@@ -103,40 +100,12 @@ void UWeatherSubsystem::UpdateSunRotation() const
 
 void UWeatherSubsystem::UpdateMonth()
 {
-	int32 DaysInMonth = 30;
-
-	switch (CurrentWeatherTable.Month)
-	{
-	case EMonthOfYear::January:
-	case EMonthOfYear::March:
-	case EMonthOfYear::May:
-	case EMonthOfYear::July:
-	case EMonthOfYear::August:
-	case EMonthOfYear::October:
-	case EMonthOfYear::December:
-		DaysInMonth = 31;
-		break;
-
-	case EMonthOfYear::April:
-	case EMonthOfYear::June:
-	case EMonthOfYear::September:
-	case EMonthOfYear::November:
-		DaysInMonth = 30;
-		break;
-
-	case EMonthOfYear::February:
-		DaysInMonth = 28;
-		break;
-	default: break;
-	}
+	static const uint8 DaysPerMonth[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+	const int32 DaysInMonth = DaysPerMonth[CurrentWeatherTable.Month % 12];
 
 	if (CurrentWeatherTable.Day > DaysInMonth)
 	{
 		CurrentWeatherTable.Day = 1;
-
-		CurrentWeatherTable.Month =
-			static_cast<EMonthOfYear>(
-				(static_cast<uint8>(CurrentWeatherTable.Month.GetValue()) + 1) % 12
-			);
+		CurrentWeatherTable.Month = (CurrentWeatherTable.Month + 1) % 12;
 	}
 }

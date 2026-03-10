@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Misc/DateTime.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Tickable.h"
 #include "WeatherSubsystem.generated.h"
 
 UENUM(BlueprintType)
-enum EWeatherType : uint8
+enum class EWeatherType : uint8
 {
 	Clear,
 	Cloudy,
@@ -22,13 +23,13 @@ struct FWeatherTable
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	EWeatherType Weather;
-	
-	UPROPERTY(EditAnywhere)
-	TEnumAsByte<EDayOfWeek> DayOfWeek;
-	
-	UPROPERTY(EditAnywhere)
-	TEnumAsByte<EMonthOfYear> Month;
+	EWeatherType Weather = EWeatherType::Clear;
+
+	UPROPERTY(EditAnywhere, Meta=(ClampMin=0, ClampMax=6))
+	uint8 DayOfWeek = 0;
+
+	UPROPERTY(EditAnywhere, Meta=(ClampMin=0, ClampMax=11))
+	uint8 Month = 6;    
 	
 	UPROPERTY(EditAnywhere)
 	float Day;
