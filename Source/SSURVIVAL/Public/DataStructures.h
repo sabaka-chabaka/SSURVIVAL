@@ -68,3 +68,5 @@ struct FInventorySlot
 	UPROPERTY(EditAnywhere)
 	FItemInstance Item;
 };
+
+// hell yeah
