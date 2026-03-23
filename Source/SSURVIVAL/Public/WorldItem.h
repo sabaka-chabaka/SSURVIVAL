@@ -19,8 +19,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item")
 	FItemInstance Item;
 
@@ -37,7 +35,7 @@ public:
 	bool bAutoPickup = false;
 
 	bool TryPickup(class ASSCharacter* Character);
-	
+
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

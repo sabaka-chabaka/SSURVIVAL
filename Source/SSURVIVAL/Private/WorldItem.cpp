@@ -9,7 +9,7 @@
 AWorldItem::AWorldItem()
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = MeshComponent;
 
@@ -17,20 +17,14 @@ AWorldItem::AWorldItem()
 	InteractionSphere->SetupAttachment(RootComponent);
 	InteractionSphere->SetSphereRadius(PickupRadius);
 	InteractionSphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-	
+
 	InteractionSphere->OnComponentBeginOverlap.AddDynamic(this, &AWorldItem::OnOverlapBegin);
 }
 
 void AWorldItem::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	InteractionSphere->SetSphereRadius(PickupRadius);
-}
-
-void AWorldItem::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 
 bool AWorldItem::TryPickup(ASSCharacter* Character)

@@ -9,22 +9,32 @@
 void UWeatherSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	CurrentWeatherTable.Weather = EWeatherType::Clear;
-	CurrentWeatherTable.DayOfWeek = 0; // Monday
-	CurrentWeatherTable.Month = 6;     // July
-	CurrentWeatherTable.Day = 1;
-	CurrentWeatherTable.Hours = 12;
-	CurrentWeatherTable.Minutes = 0;
-	CurrentWeatherTable.Seconds = 0;
+	CurrentWeatherTable.Weather    = EWeatherType::Clear;
+	CurrentWeatherTable.DayOfWeek  = 0; // Monday
+	CurrentWeatherTable.Month      = 6; // July
+	CurrentWeatherTable.Day        = 1;
+	CurrentWeatherTable.Hours      = 12;
+	CurrentWeatherTable.Minutes    = 0;
+	CurrentWeatherTable.Seconds    = 0.f;
+}
+
+void UWeatherSubsystem::RegisterComponents(
+	UVolumetricCloudComponent*      InCloud,
+	UExponentialHeightFogComponent* InFog,
+	UDirectionalLightComponent*     InSun)
+{
+	CloudyComponent = InCloud;
+	FogComponent    = InFog;
+	SunLight        = InSun;
 }
 
 void UWeatherSubsystem::Tick(float DeltaTime)
 {
-	CurrentWeatherTable.Seconds += DeltaTime * 24;
+	CurrentWeatherTable.Seconds += DeltaTime * 24.f;
 
-	if (CurrentWeatherTable.Seconds >= 60)
+	if (CurrentWeatherTable.Seconds >= 60.f)
 	{
-		CurrentWeatherTable.Seconds -= 60;
+		CurrentWeatherTable.Seconds -= 60.f;
 		CurrentWeatherTable.Minutes++;
 	}
 
@@ -38,13 +48,13 @@ void UWeatherSubsystem::Tick(float DeltaTime)
 	{
 		CurrentWeatherTable.Hours = 0;
 		CurrentWeatherTable.Day++;
-
 		CurrentWeatherTable.DayOfWeek = (CurrentWeatherTable.DayOfWeek + 1) % 7;
-
 		UpdateMonth();
 	}
-	
-	if (!CloudyComponent || !FogComponent)
+
+	UpdateSunRotation();
+
+	if (!CloudyComponent.IsValid() || !FogComponent.IsValid())
 	{
 		return;
 	}
@@ -83,19 +93,19 @@ TStatId UWeatherSubsystem::GetStatId() const
 
 void UWeatherSubsystem::UpdateSunRotation() const
 {
-	if (!SunLight)
+	if (!SunLight.IsValid())
 	{
 		return;
 	}
 
-	float TotalSeconds = (CurrentWeatherTable.Hours * 3600.0f) + (CurrentWeatherTable.Minutes * 60.0f) + CurrentWeatherTable.Seconds;
-	
-	float DayRatio = TotalSeconds / (24.0f * 3600.0f);
-	
-	float SunPitch = (DayRatio * 360.0f) + 90.0f;
+	const float TotalSeconds = (CurrentWeatherTable.Hours   * 3600.f)
+	                         + (CurrentWeatherTable.Minutes *   60.f)
+	                         +  CurrentWeatherTable.Seconds;
 
-	FRotator NewRotation = FRotator(SunPitch, 0.0f, 0.0f);
-	SunLight->SetRelativeRotation(NewRotation);
+	const float DayRatio = TotalSeconds / (24.f * 3600.f);
+	const float SunPitch = DayRatio * 360.f - 90.f;
+
+	SunLight->SetRelativeRotation(FRotator(SunPitch, 0.f, 0.f));
 }
 
 void UWeatherSubsystem::UpdateMonth()
@@ -105,7 +115,7 @@ void UWeatherSubsystem::UpdateMonth()
 
 	if (CurrentWeatherTable.Day > DaysInMonth)
 	{
-		CurrentWeatherTable.Day = 1;
+		CurrentWeatherTable.Day   = 1;
 		CurrentWeatherTable.Month = (CurrentWeatherTable.Month + 1) % 12;
 	}
 }

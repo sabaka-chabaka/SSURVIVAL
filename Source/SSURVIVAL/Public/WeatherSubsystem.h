@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Misc/DateTime.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Tickable.h"
 #include "WeatherSubsystem.generated.h"
@@ -29,53 +28,52 @@ struct FWeatherTable
 	uint8 DayOfWeek = 0;
 
 	UPROPERTY(EditAnywhere, Meta=(ClampMin=0, ClampMax=11))
-	uint8 Month = 6;    
-	
+	uint8 Month = 6;
+
 	UPROPERTY(EditAnywhere)
-	float Day;
-	
+	int32 Day = 1;
+
 	UPROPERTY(EditAnywhere)
-	float Hours;
-	
+	int32 Hours = 12;
+
 	UPROPERTY(EditAnywhere)
-	float Minutes;
-	
+	int32 Minutes = 0;
+
 	UPROPERTY(EditAnywhere)
-	float Seconds;
+	float Seconds = 0.f;
 };
 
 UCLASS()
 class SSURVIVAL_API UWeatherSubsystem : public UWorldSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
-	
+
 public:
-	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	
+
 	UFUNCTION(BlueprintCallable)
 	void ChangeWeatherTable(const FWeatherTable& NewTable) { CurrentWeatherTable = NewTable; }
-	
+
 	UFUNCTION(BlueprintCallable)
 	FWeatherTable GetWeather() const { return CurrentWeatherTable; }
 	
+	UFUNCTION(BlueprintCallable, Category="Weather")
+	void RegisterComponents(
+		class UVolumetricCloudComponent* InCloud,
+		class UExponentialHeightFogComponent* InFog,
+		class UDirectionalLightComponent* InSun);
+
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
-	virtual bool IsTickable() const override { return true; };
-	
+	virtual bool IsTickable() const override { return true; }
+
 private:
 	FWeatherTable CurrentWeatherTable;
-	
-protected:
-	UPROPERTY(EditAnywhere, Category="Weather")
-	class UVolumetricCloudComponent* CloudyComponent;
-	
-	UPROPERTY(EditAnywhere, Category="Weather")
-	class UExponentialHeightFogComponent* FogComponent;
 
-	UPROPERTY(EditAnywhere, Category="Weather")
-	class UDirectionalLightComponent* SunLight;
-	
+	TWeakObjectPtr<class UVolumetricCloudComponent>      CloudyComponent;
+	TWeakObjectPtr<class UExponentialHeightFogComponent> FogComponent;
+	TWeakObjectPtr<class UDirectionalLightComponent>     SunLight;
+
 	void UpdateSunRotation() const;
 	void UpdateMonth();
 };

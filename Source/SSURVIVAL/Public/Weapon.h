@@ -9,11 +9,11 @@
 UENUM(BlueprintType)
 enum EWeaponType : uint8
 {
-	Rifle,
-	Pistol,
-	Bow,
-	Shotgun,
-	Unknown
+	Rifle   UMETA(DisplayName="Rifle"),
+	Pistol  UMETA(DisplayName="Pistol"),
+	Bow     UMETA(DisplayName="Bow"),
+	Shotgun UMETA(DisplayName="Shotgun"),
+	Unknown UMETA(DisplayName="Unknown")
 };
 
 UCLASS()
@@ -37,13 +37,13 @@ public:
 	float Range = 5000.f;
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
-	int Ammo = 30;
+	int32 Ammo = 30;
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
-	int ReserveAmmo = 90;
+	int32 ReserveAmmo = 90;
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
-	int MaxAmmo = 30;
+	int32 MaxAmmo = 30;
 
 	UPROPERTY(EditAnywhere, Category="Weapon")
 	TEnumAsByte<EWeaponType> WeaponType = Unknown;
